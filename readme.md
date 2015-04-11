@@ -5,20 +5,26 @@ As I pick up new tools using laravel, I'll expand this.
 
 # Install composer
 
+```
 mkdir ~/Projects
 cd ~/Projects
 mkdir ~/Projects/myproject
 brew install composer --ignore-dependencies
 composer create-project laravel/laravel --prefer-dist LaravelWithExtras
 cd LaravelWithExtras
+```
 
+# Set up git
+
+```
 git init
 git add .
 git commit -m "init"
-
+```
 
 # Set up database
 
+```
 cp .env .env.local
 
 vi .env.local
@@ -34,9 +40,11 @@ cp .env.local .env
 
 git add .
 git commit -m "env"
+```
 
 # ide helper
 
+```
 composer require barryvdh/laravel-ide-helper
 echo "'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider'," | pbcopy
 vi config/app.php
@@ -47,9 +55,11 @@ ls _ide_helper.php >> .gitignore
 echo '"php artisan ide-helper:generate",' | pbcopy
 
 git commit -m "ide helper"
+```
 
 # Install codeception
 
+```
 composer require "codeception/codeception:*"
 
 git add .
@@ -72,23 +82,24 @@ $I->see("Laravel");
 ?>
 ' >  tests/acceptance/WelcomeCept.php 
 
-Replace
-url: 'http://localhost:8000/'
-
-in
+Replace `url: 'http://localhost:8000/'` in
 
 vi tests/acceptance.suite.yml 
 
+```
 # Try out the test
 
+```
 php artisan serve
 
 vendor/bin/codecept run
-
+```
 
 # Extra scripts
 
 Added two scripts, for build checking
 
+```
 ls build/
 check_app_syntax	run_all_tests
+```
