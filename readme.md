@@ -1,23 +1,94 @@
-## Laravel PHP Framework
+Below is my installation of laravel, that includes the ide helper, codeception, and a simple script to syntax check php
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/downloads.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+As I pick up new tools using laravel, I'll expand this.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
 
-Laravel is accessible, yet powerful, providing powerful tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+# Install composer
 
-## Official Documentation
+mkdir ~/Projects
+cd ~/Projects
+mkdir ~/Projects/myproject
+brew install composer --ignore-dependencies
+composer create-project laravel/laravel --prefer-dist LaravelWithExtras
+cd LaravelWithExtras
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+git init
+git add .
+git commit -m "init"
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+# Set up database
 
-### License
+cp .env .env.local
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+vi .env.local
+DB_DATABASE=db1
+DB_USERNAME=user1
+DB_PASSWORD=password1
+
+mysql -u root "CREATE USER 'user1'@'localhost' IDENTIFIED BY 'password1';"
+mysql -u root -e "grant all privileges on *.* to 'user1'@'localhost' identified by 'password1'"
+mysql -u root -e "create database db1"
+
+cp .env.local .env
+
+git add .
+git commit -m "env"
+
+# ide helper
+
+composer require barryvdh/laravel-ide-helper
+echo "'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider'," | pbcopy
+vi config/app.php
+
+//Append to providers
+ls _ide_helper.php >> .gitignore 
+
+echo '"php artisan ide-helper:generate",' | pbcopy
+
+git commit -m "ide helper"
+
+# Install codeception
+
+composer require "codeception/codeception:*"
+
+git add .
+git commit -m 'install codeception'
+
+vendor/bin/codecept help bootstrap
+
+git add .
+git commit -m 'bootstrap codeception'
+
+vendor/bin/codecept generate:cept acceptance Welcome
+
+echo '
+<?php
+date_default_timezone_set("UTC");
+$I = new AcceptanceTester($scenario);
+$I->wantTo("ensure that frontpage works");
+$I->amOnPage("/");
+$I->see("Laravel");
+?>
+' >  tests/acceptance/WelcomeCept.php 
+
+Replace
+url: 'http://localhost:8000/'
+
+in
+
+vi tests/acceptance.suite.yml 
+
+# Try out the test
+
+php artisan serve
+
+vendor/bin/codecept run
+
+
+# Extra scripts
+
+Added two scripts, for build checking
+
+ls build/
+check_app_syntax	run_all_tests
