@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+build/check_app_syntax
+php vendor/bin/phpunit
+php vendor/bin/codecept run --env dev

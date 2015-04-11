@@ -1,0 +1,12 @@
+#!/bin/sh
+
+res="$(find $PWD/app $PWD/tests -name '*.php' -type f -exec php -l {} \;  2>&1 | grep -v 'No syntax errors detected')"
+
+if [ -z "$res" ]
+then
+	echo "no syntax error"
+else
+	echo "errors found"
+	echo $res
+	exit 1
+fi
