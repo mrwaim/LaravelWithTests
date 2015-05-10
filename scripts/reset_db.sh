@@ -4,7 +4,7 @@ if [ "$1" == "" ]; then
     exit 1;
 fi
 
+composer dump-autoload
 mysql -u root -e "drop database $1; create database $1;"
 php artisan migrate
 php artisan -v db:seed
-
