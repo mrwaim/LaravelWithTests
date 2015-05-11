@@ -4,3 +4,4 @@
 _ide_helper.php
 
 tests/_output/*
+/nbproject/private/
