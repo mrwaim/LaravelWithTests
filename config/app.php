@@ -128,7 +128,12 @@ return [
         'App\Providers\ConfigServiceProvider',
         'App\Providers\EventServiceProvider',
         'App\Providers\RouteServiceProvider',
+
+        'Vinkla\Hashids\HashidsServiceProvider',
+        
+        // For Developement
         'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
+        'Prettus\RequestLogger\Providers\LoggerServiceProvider',
     ],
     /*
       |--------------------------------------------------------------------------
@@ -174,5 +179,6 @@ return [
         'URL' => 'Illuminate\Support\Facades\URL',
         'Validator' => 'Illuminate\Support\Facades\Validator',
         'View' => 'Illuminate\Support\Facades\View',
+        'Hashids' => 'Vinkla\Hashids\Facades\Hashids',
     ],
 ];
