@@ -11,7 +11,7 @@
 |
 */
 
-LogSqlHelper::registerLogging();
+App\Helpers\LogSqlHelper::registerLogging();
 
 Route::get('/', 'WelcomeController@index');
 
