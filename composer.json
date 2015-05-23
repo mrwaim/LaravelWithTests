@@ -1,4 +1,5 @@
 {
+
 	"name": "laravel/laravel",
 	"description": "The Laravel Framework.",
 	"keywords": ["framework", "laravel"],
@@ -8,7 +9,13 @@
 		"laravel/framework": "5.0.*",
 		"barryvdh/laravel-ide-helper": "~2.0",
 		"codeception/codeception": "*",
-		"mamor/php-hipchat": "0.1.*"
+		"mamor/php-hipchat": "0.1.*",
+
+	
+	"prettus/laravel-request-logger": "~1.0",
+
+	
+	"vinkla/hashids": "~1.1"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",
