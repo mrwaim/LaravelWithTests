@@ -45,8 +45,10 @@ class EditMoveModel extends Command {
             $p2 = base_path('tests');
             $p3 = base_path('database/seeds');
             $command = "grep -l -R '^\s*use\b.*\\$className;' $p1 $p2 $p3";
-            $out = exec($command);
-            foreach (explode(PHP_EOL, $out) as $line) {
+            $this->comment("COMMAND:$command");
+            $out;
+            $res = exec($command, $out);
+            foreach ($out as $line) {
                 if (!$line) {
                     continue;
                 }
