@@ -22,7 +22,8 @@ class ListModel extends Command {
      */
     protected $description = 'List all models.';
 
-    public function fire() {
+    public static function getAllModels()
+    {
         $files = File::allFiles(app_path());
         foreach ($files as $file) {
             /* @var $file SplFileInfo */
@@ -31,8 +32,14 @@ class ListModel extends Command {
             $content = $f->fread($f->getSize());
 
             if (str_contains($content, "class $noExt extends Model")) {
-                $this->comment($file->getFilename());
+                yield $file->getFilename();
             }
+        }
+    }
+    
+    public function fire() {
+        foreach (self::getAllModels() as $model) {
+            $this->comment($model);
         }
     }
 
