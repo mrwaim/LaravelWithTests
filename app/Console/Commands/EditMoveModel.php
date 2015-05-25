@@ -4,42 +4,61 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use File;
-use Symfony\Component\Finder\SplFileInfo;
 
-class ListModel extends Command {
+class EditMoveModel extends Command {
 
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'list:model';
+    protected $name = 'edit:movemodel';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'List all models.';
+    protected $description = 'Move models from App to App\Models\.';
 
-    public static function getAllModels()
-    {
-        $files = File::allFiles(app_path());
-        foreach ($files as $file) {
-            /* @var $file SplFileInfo */
-            $noExt = preg_replace("/\.[^.]+$/", "", $file->getBasename());
-            $f = $file->openFile();
-            $content = $f->fread($f->getSize());
-
-            if (str_contains($content, "class $noExt extends Model")) {
-                yield $file->getFilename();
-            }
-        }
-    }
-    
     public function fire() {
-        foreach (self::getAllModels() as $model) {
-            $this->comment($model);
+        if (!File::exists(app_path('Models'))) {
+            File::makeDirectory(app_path('Models'));
+        }
+
+        foreach (ListModel::getAllModels() as $model) {
+            $this->comment($model->getFilename());
+
+            $file = $model->openFile('r');
+            $content = $file->fread($file->getSize());
+            $content = preg_replace("/\bnamespace\s+.*?;/", "namespace App\Models;", $content);
+            $file = $model->openFile('w');
+            $file->fwrite($content);
+            $file->fflush();
+
+            $targetFolder = app_path('Models/' . $model->getBasename());
+            File::move($model->getPathname(), $targetFolder);
+
+            $className = preg_replace("/\.[^.]+$/", "", $file->getBasename());
+
+            $p1 = base_path('app');
+            $p2 = base_path('tests');
+            $p3 = base_path('database/seeds');
+            $command = "grep -l -R '^\s*use\b.*\\$className;' $p1 $p2 $p3";
+            $out = exec($command);
+            foreach (explode(PHP_EOL, $out) as $line) {
+                if (!$line) {
+                    continue;
+                }
+                
+                $this->comment("LINE:$line");
+                $regex = "/^(\\s*use\\s+).*?\\\\$className;/m";
+                //dd($regex);
+                $referrerContent = file_get_contents($line);
+                $referrerContent = preg_replace($regex, "\$1App\\Models\\$className;", $referrerContent);
+                
+                file_put_contents($line, $referrerContent);
+            }
         }
     }
 

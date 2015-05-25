@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel {
 	protected $commands = [
 		'App\Console\Commands\ClearCachedView',
 		'App\Console\Commands\ListModel',
+		'App\Console\Commands\EditMoveModel',
 	];
 
 	/**
