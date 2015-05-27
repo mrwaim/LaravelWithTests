@@ -37,7 +37,11 @@ class EditMoveModel extends Command {
             $file->fflush();
 
             $targetFolder = app_path('Models/' . $model->getBasename());
-            File::move($model->getPathname(), $targetFolder);
+            if ($model->getPathname() != $targetFolder) {
+                File::move($model->getPathname(), $targetFolder);
+            }
+
+            $this->comment("Move: " . $model->getPathname() . " to " . $targetFolder);
 
             $className = preg_replace("/\.[^.]+$/", "", $file->getBasename());
 
@@ -45,21 +49,42 @@ class EditMoveModel extends Command {
             $p2 = base_path('tests');
             $p3 = base_path('database/seeds');
             $command = "grep -l -R '^\s*use\b.*\\$className;' $p1 $p2 $p3";
-            $this->comment("COMMAND:$command");
+            $this->comment("USE GREP COMMAND:$command");
+            $out = null;
+            $res = exec($command, $out);
+            foreach ($out as $line) {
+                if (!$line) {
+                    continue;
+                }
+
+                $this->comment("LINE:$line");
+                $regex = "/^(\\s*use\\s+).*?\\\\$className;/m";
+                //dd($regex);
+                $referrerContent = file_get_contents($line);
+                $newReferrerContent = preg_replace($regex, "\$1App\\Models\\$className;", $referrerContent);
+
+                if ($referrerContent != $newReferrerContent) {
+                    file_put_contents($line, $referrerContent);
+                }
+            }
+
+            //
+            $command = "grep -l -R 'belongsTo\|hasMany\|hasOne' $p1";
+            $this->comment("RELATIONSHIP COMMAND:$command");
             $out;
             $res = exec($command, $out);
             foreach ($out as $line) {
                 if (!$line) {
                     continue;
                 }
-                
-                $this->comment("LINE:$line");
-                $regex = "/^(\\s*use\\s+).*?\\\\$className;/m";
-                //dd($regex);
+
+                $this->comment("LINE RELATIONSHIP:$line");
+                $regex = "/(belongsTo|hasMany|hasOne)\('.*?\\\\$className'\)/m";
                 $referrerContent = file_get_contents($line);
-                $referrerContent = preg_replace($regex, "\$1App\\Models\\$className;", $referrerContent);
-                
-                file_put_contents($line, $referrerContent);
+                $newReferrerContent = preg_replace($regex, "\$1('App\\Models\\$className')", $referrerContent);
+                if ($newReferrerContent != $referrerContent) {
+                    file_put_contents($line, $newReferrerContent);
+                }
             }
         }
     }
