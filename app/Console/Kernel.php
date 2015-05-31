@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel {
 		'App\Console\Commands\ClearCachedView',
 		'App\Console\Commands\ListModel',
 		'App\Console\Commands\EditMoveModel',
+                'App\Console\Commands\LogClearOld',
 	];
 
 	/**
