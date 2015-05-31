@@ -1,4 +1,6 @@
-<?php namespace App\Helpers;
+<?php
+
+namespace App\Helpers;
 
 class LogHelper {
 
@@ -30,4 +32,5 @@ class LogHelper {
         }
         return ['count' => count($array), 'array' => $array];
     }
+
 }

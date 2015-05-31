@@ -24,8 +24,7 @@ class ListModel extends Command {
 
     /**
      * @return SplFileInfo */
-    public static function getAllModels()
-    {
+    public static function getAllModels() {
         $files = File::allFiles(app_path());
         foreach ($files as $file) {
             /* @var $file SplFileInfo */
@@ -38,7 +37,7 @@ class ListModel extends Command {
             }
         }
     }
-    
+
     public function fire() {
         foreach (self::getAllModels() as $model) {
             $this->comment($model->getFilename());

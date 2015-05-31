@@ -1,4 +1,7 @@
-<?php namespace App\Helpers;
+<?php
+
+namespace App\Helpers;
+
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Config;
@@ -33,4 +36,5 @@ class LogSqlHelper {
             $log->addInfo($query, $data);
         });
     }
+
 }

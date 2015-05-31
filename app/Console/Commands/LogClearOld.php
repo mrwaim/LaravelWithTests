@@ -34,16 +34,12 @@ class LogClearOld extends Command {
 
         $now = date('Y-m-d');
         $files = Finder::create()->in(storage_path("logs"))->files();
-        foreach($files->files() as $file)
-        {
+        foreach ($files->files() as $file) {
             $fileName = $file->getFileName();
-            if (!str_contains($fileName, $now))
-            {
+            if (!str_contains($fileName, $now)) {
                 $this->comment("Deleting " . $fileName);
                 $fileSystem->remove($file);
-            }
-            else
-            {
+            } else {
                 $this->comment("Keeping " . $fileName);
             }
         }
